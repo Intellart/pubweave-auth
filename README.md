@@ -1,5 +1,10 @@
 # vue-intellart
 
+## Launch ArLocal is a second terminal
+```
+npx arlocal
+```
+
 ## Project setup
 ```
 npm install
