@@ -1,13 +1,6 @@
 <template>
-  <div >
+  <div>
     <form @submit='submitFromAction'>
-      <input type="file" accept="image/*" @change="onChange" />
-      <div id="preview">
-        
-        <img v-if="item.imageUrl" :src="item.imageUrl" />
-        
-      </div>
-      <label for="input-box"></label>
       <input
         id='input-box'
         type="text"
@@ -32,17 +25,6 @@ export default {
   components: {
 
   },
-  data() {
-    return {
-      inputValue: '',
-      item: {
-        image : null,
-        imageUrl: null,
-        imageType: null,
-        imageSize: null
-      }
-    }
-  },
   methods: {
     async submitFromAction(e){
       e.preventDefault();
@@ -52,22 +34,10 @@ export default {
       }else{
         console.log('This value already exist: ' + this.inputValue)
       }
-
-      if(this.image != null){
-        await this.$store.dispatch('ar_post', {'inputValue': this.inputValue, 'contentType': 'image/png'});
-      }
     },
     async init(){
       await this.$store.dispatch('ar_fetch');
     },
-    onChange(e) {
-      console.log(e)
-      const file = e.target.files[0]
-      this.image = file
-      this.item.imageUrl = URL.createObjectURL(file)
-      this.imageType = file.type
-      this.imageSize = file.size
-    }
   },
   created(){
     this.$store.dispatch('ar_fetch');

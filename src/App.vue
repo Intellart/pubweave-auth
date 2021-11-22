@@ -7,14 +7,15 @@
         </q-toolbar-title>
 
         <q-chip
+          v-if='isAuthenticated'
           dense
           outline
           size='lg'
           id='wallet-chip'
-          text-color="white"
-          icon='fas fa-wallet'
-          style="display: none">
-        </q-chip>
+          text-color="white">
+          <q-avatar icon='fas fa-wallet'/>
+          <span id='wallet-chip-str'>{{ $store.getters.getWalletHeader }}</span>
+          </q-chip>
 
         <q-btn
          v-if='isAuthenticated'
@@ -27,43 +28,28 @@
           label="Login"
         />
 
-        <q-btn
-          label='Login'
-          id='header-login'
-          @click="loginFunc"
-        />
-
-        <q-btn
-          label='Logout'
-          id='header-logout'
-          @click="logoutFunc"
-          style='display: none'
-        />
       </q-toolbar>
 
       <q-tabs align="left">
-        <q-route-tab to="/" label="Gallery" />
-        <q-route-tab to="/upload" label="Create NFT" />
-        <q-route-tab to="/my-assets" label="My Assets" />
+        <q-route-tab to="/" label="Gallery" exact/>
+        <q-route-tab to="/upload" label="Upload" exact/>
+        <q-route-tab to="/my-assets" label="My Assets" exact/>
       </q-tabs>
     </q-header>
 
     <q-page-container>
-      <q-page>
-        <Home />
-      </q-page>
+      <router-view></router-view>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-// import { ref } from 'vue'
+
 import Home from './views/Home.vue'
 import store from '@/store/index.js';
 
 export default {
   name: 'LayoutDefault',
-
   components: {
     Home
   },
@@ -89,17 +75,13 @@ export default {
     }
   },
   setup () {
-    return {
-    }
+    return {}
   },
   async mounted() {
     await this.$store.dispatch('fetch_pubweave_txs')
   },
   computed: {
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated
-    }
-    
+    isAuthenticated() { return this.$store.getters.isAuthenticated }, 
   }
 }
 </script>

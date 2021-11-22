@@ -14,7 +14,8 @@ export default createStore({
   state: {
     'activeWallet': null,
     'items': [],
-    'txs': []
+    'txs': [],
+    'myAssets': []
   },
   mutations: {
     // Change data within the sate through mutation commit
@@ -35,6 +36,9 @@ export default createStore({
     setActiveWallet: (state, wallet) => {
       state.activeWallet = wallet
     },
+    save_my_assets: (state, txs) => {
+      state.myAssets = txs
+    }
   },
   actions: {
     // Methods that can't change data inside of state
@@ -66,6 +70,14 @@ export default createStore({
         commit('save_pub_tx', txs)
       });
     },
+    async get_my_assets({commit}, payload){
+      console.log(payload)
+      ardb.search('transactions').appName('PubWeave').from(payload.wallet).find().then(
+        async (txs) => {
+          commit('save_my_assets', txs)
+        }
+      )
+    },
     // Wallet is null is case of a logout
     setLogin({commit}, payload) {
       commit('setActiveWallet', payload.wallet)
@@ -82,7 +94,10 @@ export default createStore({
     },
     isAuthenticated: (state) => {
       return state.activeWallet === null ? false : true
-    }
+    },
+    getWalletHeader: (state) => {
+      return state.activeWallet === null ? '' : state.activeWallet.substring(0, 10)
+    },
   },
   modules: {
     
