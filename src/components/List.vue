@@ -1,6 +1,12 @@
 <template>
   <div >
     <form @submit='submitFromAction'>
+      <input type="file" accept="image/*" @change="onChange" />
+      <div id="preview">
+        
+        <img v-if="item.imageUrl" :src="item.imageUrl" />
+        
+      </div>
       <label for="input-box"></label>
       <input
         id='input-box'
@@ -19,14 +25,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
-
-import Arweave from 'arweave';
-const arweave = Arweave.init({
-  host: 'localhost',
-  port: 1984,
-  protocol: 'http'
-});
+// @ is an alias to /srcW
 export default {
 
   name: 'List',
@@ -36,22 +35,39 @@ export default {
   data() {
     return {
       inputValue: '',
+      item: {
+        image : null,
+        imageUrl: null,
+        imageType: null,
+        imageSize: null
+      }
     }
   },
   methods: {
     async submitFromAction(e){
       e.preventDefault();
       if (!(this.$store.state.items.includes(this.inputValue))){
-        await this.$store.dispatch('ar_post', {'inputValue': this.inputValue});
+        await this.$store.dispatch('ar_post', {'inputValue': this.inputValue, 'contentType': 'text/plain'});
         await this.$store.dispatch('ar_fetch');
       }else{
         console.log('This value already exist: ' + this.inputValue)
       }
+
+      if(this.image != null){
+        await this.$store.dispatch('ar_post', {'inputValue': this.inputValue, 'contentType': 'image/png'});
+      }
     },
     async init(){
       await this.$store.dispatch('ar_fetch');
+    },
+    onChange(e) {
+      console.log(e)
+      const file = e.target.files[0]
+      this.image = file
+      this.item.imageUrl = URL.createObjectURL(file)
+      this.imageType = file.type
+      this.imageSize = file.size
     }
-    
   },
   created(){
     this.$store.dispatch('ar_fetch');

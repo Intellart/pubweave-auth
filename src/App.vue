@@ -17,6 +17,17 @@
         </q-chip>
 
         <q-btn
+         v-if='isAuthenticated'
+         @click="setLogin"
+         label="Logout"
+        />
+        <q-btn
+          v-else
+          @click="setLogin"
+          label="Login"
+        />
+
+        <q-btn
           label='Login'
           id='header-login'
           @click="loginFunc"
@@ -47,8 +58,8 @@
 
 <script>
 // import { ref } from 'vue'
-import HelloWorld from './components/HelloWorld.vue'
 import Home from './views/Home.vue'
+import store from '@/store/index.js';
 
 export default {
   name: 'LayoutDefault',
@@ -57,40 +68,38 @@ export default {
     Home
   },
   methods: {
-    loginFunc: async () => {
-      await window.arweaveWallet.connect([
-        'ACCESS_ADDRESS',
-        'SIGN_TRANSACTION'
-      ], {
-        name: 'PubWeave'
-      })
+    setLogin: async () => {
+      if(store.getters.isAuthenticated){
+        await window.arweaveWallet.disconnect()
+        store.dispatch('setLogin', {'wallet': null})
+      }else{
+        try {
+          await window.arweaveWallet.connect([
+              'ACCESS_ADDRESS',
+              'SIGN_TRANSACTION'
+            ], {
+              name: 'PubWeave'
+            })
+          const address = await window.arweaveWallet.getActiveAddress()
+          store.dispatch('setLogin', {'wallet': address})
+        } catch (e) {
 
-      try {
-        const address = await window.arweaveWallet.getActiveAddress()
-        document.querySelector('#header-login').style.display = 'none'
-        document.querySelector('#header-logout').style.display = 'block'
-        document.querySelector('#wallet-chip').style.display = 'block'
-        document.querySelector('#wallet-chip').innerHTML = address.substring(0, 10) + '...'
-      } catch (e) {
-        document.querySelector('#header-login').style.display = 'block'
-        document.querySelector('#header-logout').style.display = 'none'
-        document.querySelector('#wallet-chip').innerHTML = ''
-        document.querySelector('#wallet-chip').display = 'none'
-
+        }
       }
-    },
-    logoutFunc: async () => {
-      await window.arweaveWallet.disconnect()
-      document.querySelector('#header-login').style.display = 'block'
-      document.querySelector('#header-logout').style.display = 'none'
-      document.querySelector('#wallet-chip').innerHTML = ''
-      document.querySelector('#wallet-chip').display = 'none'
     }
   },
   setup () {
     return {
-      // leftDrawerOpen: ref(false)
     }
+  },
+  async mounted() {
+    await this.$store.dispatch('fetch_pubweave_txs')
+  },
+  computed: {
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated
+    }
+    
   }
 }
 </script>
