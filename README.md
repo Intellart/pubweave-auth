@@ -1,13 +1,18 @@
 # vue-intellart
 
-## Launch ArLocal is a second terminal
+## Project setup
+```
+npm install
+```
+
+## Launch ArLocal
 ```
 npx arlocal
 ```
 
-## Project setup
+## Mint Currency on ArLocal
 ```
-npm install
+From a browser, reach http://localhost:1984/mint/<wallet>/<balance>
 ```
 
 ### Compiles and hot-reloads for development
@@ -20,5 +25,7 @@ npm run serve
 npm run build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Deploy on Arlocal
+```
+arkb deploy dist --gateway=http://localhost:1984
+```
