@@ -10,5 +10,6 @@ export default {
   config: {},
   plugins: {
   },
-  iconSet: iconSet
+  iconSet: iconSet,
+  preFetch: true
 }

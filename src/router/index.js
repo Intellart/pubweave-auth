@@ -1,13 +1,15 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-import Upload from '../views/UploadView.vue'
-import MyAssets from '../views/MyAssets.vue'
+
+// Import components this way for JS LazyLoading, bigger view should have thier own webpackChunkName
+const MyAssets = () => import(/* webpackChunkName': "creator" */'../views/MyAssets')
+const Upload = () => import(/* webpackChunkName': "creator" */'../views/UploadView.vue')
+const Gallery = () => import(/* webpackChunkName': "creator" */'../views/Gallery.vue')
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'Gallery',
+    component: Gallery
   },{
     path: '/upload',
     name: 'Upload',
@@ -21,7 +23,16 @@ const routes = [
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
+  routes,
+  /*
+  scrollBehavior(){
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  }
+  */
 })
 
 export default router
