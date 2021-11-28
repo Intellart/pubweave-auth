@@ -1,9 +1,8 @@
 <template>
-  <div class='q-pa-md'>
-    <div class='row flex'>
-      <div class='col-12' v-for='(item) in txs' :key='item.id'>
-        <TxCard :tx="{item}"/>
-      </div>
+  <div class="q-pa-md row items-start" >
+    <div v-for='(item) in txs' :key='item.id'
+      class='col-6 col-sm-4 col-md-3 col-xl-2'>
+      <TxCard :tx="{item}"/>
     </div>
   </div>
 </template>

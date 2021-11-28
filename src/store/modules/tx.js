@@ -6,8 +6,6 @@ export const state = {
 export const mutations = {
   save_uploaded_data_tx: (state, tx) => {
     if (state.uploaded_data_txs.filter(item => item.id == tx.id).length == 0){
-      console.log('loading')
-      console.log(tx.id)
       state.uploaded_data_txs.push(tx)
     }
   }
